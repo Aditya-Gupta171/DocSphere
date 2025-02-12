@@ -3,6 +3,7 @@ import api from '../../api/axios';
 
 const InviteModal = ({ documentId, onClose }) => {
   const [email, setEmail] = useState('');
+  const [accessLevel, setAccessLevel] = useState('write'); // Default to write access
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -12,10 +13,12 @@ const InviteModal = ({ documentId, onClose }) => {
     setError('');
 
     try {
-      await api.post(`/documents/${documentId}/invite`, { email });
+      await api.post(`/documents/${documentId}/invite`, { 
+        email,
+        accessLevel // Send access level to backend
+      });
       onClose();
     } catch (err) {
-      console.error('Invitation error:', err.response?.data);
       setError(err.response?.data?.message || 'Failed to send invitation');
     } finally {
       setLoading(false);
@@ -42,7 +45,19 @@ const InviteModal = ({ documentId, onClose }) => {
             className="w-full p-2 mb-4 bg-gray-700 text-white rounded"
             required
           />
-          
+
+          <div className="mb-4">
+            <label className="block text-white mb-2">Access Level</label>
+            <select
+              value={accessLevel}
+              onChange={(e) => setAccessLevel(e.target.value)}
+              className="w-full p-2 bg-gray-700 text-white rounded"
+            >
+              <option value="write">Can Edit</option>
+              <option value="read">Can View</option>
+            </select>
+          </div>
+
           <div className="flex justify-end gap-2">
             <button
               type="button"

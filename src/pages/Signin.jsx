@@ -21,7 +21,15 @@ const Signin = () => {
       localStorage.setItem(accessTokenKey, res.data.tokens.accessToken);
       localStorage.setItem(refreshTokenKey, res.data.tokens.refreshToken);
       localStorage.setItem("user", JSON.stringify(res.data.user));
-      navigate("/");
+      
+      // Check for stored redirect
+      const redirectPath = localStorage.getItem('joinRedirect');
+      if (redirectPath) {
+        localStorage.removeItem('joinRedirect');
+        navigate(redirectPath);
+      } else {
+        navigate("/");
+      }
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
     } finally {

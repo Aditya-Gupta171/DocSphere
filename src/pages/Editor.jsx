@@ -37,9 +37,14 @@ const Editor = () => {
   const updateTitle = useCallback(async (newTitle) => {
     try {
       setIsSaving(true);
-      await api.put(`/documents/${documentId}`, { title: newTitle });
+
+      const response = await api.put(`/documents/${documentId}`, { 
+        title: newTitle 
+      });
+
       setDocument(prev => ({ ...prev, title: newTitle }));
     } catch (error) {
+      console.error("Failed to update title:", error);
       setError("Failed to update title");
     } finally {
       setIsSaving(false);
